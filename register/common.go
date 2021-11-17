@@ -1,0 +1,16 @@
+package register
+
+import (
+	"github.com/gin-gonic/gin"
+)
+func Server(done func()){
+	defer done()
+	r := gin.Default()
+	r.GET("ping", func(c *gin.Context) {
+		c.JSON(200,gin.H{
+			"msg" : "pong",
+		})
+	})
+	r.POST("/register/add", Add)
+	r.Run()
+}
