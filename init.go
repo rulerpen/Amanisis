@@ -3,6 +3,7 @@ package main
 import (
 	"Amanisis/config"
 	"Amanisis/log"
+	"Amanisis/model"
 	toml "github.com/pelletier/go-toml"
 	"os"
 )
@@ -14,4 +15,5 @@ func init()  {
 	decoder := toml.NewDecoder(TomlFile)
 	decoder.Decode(conf)
 	log.LogInit(conf.LogServers)
+	model.MysqlInit(conf.MysqlServers)
 }

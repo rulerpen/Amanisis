@@ -2,3 +2,27 @@
     "name":"test",
     "strategy":"test1"
 }
+2021/11/18 17:24:34 127.0.0.1 /register/add {
+    "name":"test",
+    "strategy":"test1"
+}
+2021/11/18 17:27:26 127.0.0.1 /register/add {
+    "name":"test11",
+    "strategy":"test1"
+}
+2021/11/18 17:28:07 127.0.0.1 /register/add {
+    "name":"test11",
+    "strategy":"test1"
+}
+2021/11/18 17:32:23 127.0.0.1 /register/add {
+    "name":"test11",
+    "strategy":"test1"
+}
+2021/11/18 17:34:12 127.0.0.1 /register/add {
+    "name":"test11",
+    "strategy":"test1"
+}
+2021/11/18 17:36:53 127.0.0.1 /register/add {
+    "name":"test11",
+    "strategy":"test1"
+}

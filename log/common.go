@@ -2,7 +2,9 @@ package log
 
 import (
 	"Amanisis/config"
+	"bytes"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
 	"log"
 	"os"
 )
@@ -21,8 +23,9 @@ func LogInit(LogConf config.LogServer){
 
 func (*Log) Record(ctx *gin.Context){
 	log.SetOutput(LogClient.LogFile)
-	raw, _:= ctx.GetRawData()
-	rawStr := string(raw)
+	body, _:= ioutil.ReadAll(ctx.Request.Body)
+	rawStr := string(body)
+	ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 	log.Println(ctx.ClientIP(),ctx.FullPath(),rawStr)
 }
 
