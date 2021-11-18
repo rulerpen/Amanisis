@@ -1,0 +1,11 @@
+
+[mysql]
+host = "8.140.30.33"
+port = 3306
+dbname = "amanisis"
+user = "root"
+password = "15955638129"
+
+[log]
+url = "./log/amanisis.log"
+debug_url = "./log/amanisis.debug.log"

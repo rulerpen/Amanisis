@@ -2,14 +2,12 @@ package register
 
 import (
 	"Amanisis/common/dto/registerDto"
+	"Amanisis/log"
 	"Amanisis/model/registerModel"
 	"github.com/gin-gonic/gin"
-	"log"
 )
 func Add(c *gin.Context){
-	raw, _:= c.GetRawData()
-	rawStr := string(raw)
-	log.Println(c.FullPath(),rawStr)
+	log.LogClient.Record(c)
 	var data registerDto.AddServer
 	c.BindJSON(&data)
 	createData := registerModel.Register{
