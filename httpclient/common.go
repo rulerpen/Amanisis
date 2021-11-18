@@ -6,8 +6,7 @@ import (
 	"net/http"
 )
 
-func Post(jsonStr string)(respJson string) {
-	url := "127.0.0.1"
+func Post(url string, jsonStr string)(respJson string) {
 	byteStr := []byte(jsonStr)
 	req, _ := http.NewRequest("post",url,bytes.NewBuffer(byteStr))
 	req.Header.Set("Content-Type","application/json")

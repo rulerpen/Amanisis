@@ -9,3 +9,4 @@ password = "15955638129"
 [log]
 url = "./log/amanisis.log"
 debug_url = "./log/amanisis.debug.log"
+
