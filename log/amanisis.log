@@ -26,3 +26,15 @@
     "name":"test11",
     "strategy":"test1"
 }
+2021/12/01 21:11:37 127.0.0.1 /register/add {
+    "name":"test1.test2",
+    "strategy":"test1"
+}
+2021/12/01 21:11:43 127.0.0.1 /register/add {
+    "name":"test1.test2",
+    "strategy":"test2"
+}
+2021/12/01 21:11:47 127.0.0.1 /register/add {
+    "name":"test1.test2",
+    "strategy":"test3"
+}
