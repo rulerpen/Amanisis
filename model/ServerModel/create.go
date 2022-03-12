@@ -1,11 +1,11 @@
-package registerModel
+package ServerModel
 
 import (
 	"Amanisis/model"
 	"fmt"
 )
 
-func Create(data Register){
+func Create(data Server) {
 	fmt.Println(data)
 	model.MysqlClient.Create(data)
 }

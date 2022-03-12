@@ -3,9 +3,10 @@ package register
 import (
 	"Amanisis/common/dto/registerDto"
 	"Amanisis/log"
-	"Amanisis/model/registerModel"
+	"Amanisis/model/ServerModel"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 func Add(c *gin.Context) {
@@ -13,15 +14,21 @@ func Add(c *gin.Context) {
 	var data registerDto.AddServer
 	c.BindJSON(&data)
 	fmt.Println(data)
-	createData := registerModel.Register{
-		Name:     data.Name,
-		Ip:       c.ClientIP(),
-		Strategy: data.Strategy,
+	createData := ServerModel.Server{
+		Name: data.Name,
+		Ip:   c.ClientIP(),
+		Time: int(time.Now().Unix()),
 	}
-	if registerModel.IsExist(data.Name, c.ClientIP()) {
+	if ServerModel.IsExist(data.Name, c.ClientIP()) {
+		server := ServerModel.Server{
+			Name: data.Name,
+			Ip:   c.ClientIP(),
+			Time: 0,
+		}
+		ServerModel.Update(server)
 		c.JSON(200, "success")
 		return
 	}
-	registerModel.Create(createData)
+	ServerModel.Create(createData)
 	c.JSON(200, "success")
 }

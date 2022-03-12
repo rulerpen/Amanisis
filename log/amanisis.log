@@ -38,3 +38,35 @@
     "name":"test1.test2",
     "strategy":"test3"
 }
+2022/03/12 23:27:57 127.0.0.1 /register/add {
+    "name":"test3.test2"
+    
+}
+2022/03/12 23:28:20 127.0.0.1 /register/add {
+    "name":"test3.test2"
+    
+}
+2022/03/12 23:28:32 127.0.0.1 /register/add {
+    "name":"test3.test2"
+    
+}
+2022/03/12 23:29:48 127.0.0.1 /register/add {
+    "name":"test55"
+    
+}
+2022/03/12 23:30:04 127.0.0.1 /register/add {
+    "name":"test55"
+    
+}
+2022/03/12 23:30:13 127.0.0.1 /register/add {
+    "name":"test55"
+    
+}
+2022/03/12 23:31:39 127.0.0.1 /register/add {
+    "name":"test55"
+    
+}
+2022/03/12 23:35:12 127.0.0.1 /register/add {
+    "name":"test55"
+    
+}
