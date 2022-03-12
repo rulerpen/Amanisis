@@ -7,7 +7,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 )
-func Add(c *gin.Context){
+
+func Add(c *gin.Context) {
 	log.LogClient.Record(c)
 	var data registerDto.AddServer
 	c.BindJSON(&data)
@@ -17,6 +18,10 @@ func Add(c *gin.Context){
 		Ip:       c.ClientIP(),
 		Strategy: data.Strategy,
 	}
+	if registerModel.IsExist(data.Name, c.ClientIP()) {
+		c.JSON(200, "success")
+		return
+	}
 	registerModel.Create(createData)
-	c.JSON(200,"success")
+	c.JSON(200, "success")
 }
