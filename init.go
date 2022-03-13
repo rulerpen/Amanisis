@@ -1,10 +1,10 @@
 package main
 
 import (
+	"Amanisis/DefineServer"
 	"Amanisis/config"
 	"Amanisis/log"
 	"Amanisis/model"
-	"Amanisis/server"
 	toml "github.com/pelletier/go-toml"
 	"os"
 )
@@ -18,5 +18,5 @@ func init() {
 	decoder.Decode(conf)
 	log.LogInit(conf.LogServers)
 	model.MysqlInit(conf.MysqlServers)
-	server.InitServer()
+	DefineServer.InitServer()
 }

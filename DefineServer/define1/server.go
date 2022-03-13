@@ -2,20 +2,30 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package geerpc
+package define1
 
 import (
-	"Amanisis/server/define1/codec"
+	"Amanisis/DefineServer/define1/codec"
+	"Amanisis/balance"
+	"Amanisis/httpclient"
+	"Amanisis/model/ServerModel"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net"
 	"reflect"
+	"strings"
 	"sync"
 )
 
 const MagicNumber = 0x3bef5c
+
+func GetUrl(ip string, name string) string {
+	strings.ReplaceAll(name, ".", "/")
+	str := ip + "/" + name
+	return str
+}
 
 type Option struct {
 	MagicNumber int        // MagicNumber marks this's a geerpc request
@@ -40,7 +50,7 @@ var DefaultServer = NewServer()
 
 // ServeConn runs the server on a single connection.
 // ServeConn blocks, serving the connection until the client hangs up.
-func (server *Server) ServeConn(conn io.ReadWriteCloser) {
+func (server *Server) ServeConn(conn io.ReadWriteCloser, ip string) {
 	defer func() { _ = conn.Close() }()
 	var opt Option
 	if err := json.NewDecoder(conn).Decode(&opt); err != nil {
@@ -56,13 +66,14 @@ func (server *Server) ServeConn(conn io.ReadWriteCloser) {
 		log.Printf("rpc server: invalid codec type %s", opt.CodecType)
 		return
 	}
-	server.serveCodec(f(conn))
+
+	server.serveCodec(f(conn), ip)
 }
 
 // invalidRequest is a placeholder for response argv when error occurs
 var invalidRequest = struct{}{}
 
-func (server *Server) serveCodec(cc codec.Codec) {
+func (server *Server) serveCodec(cc codec.Codec, ip string) {
 	sending := new(sync.Mutex) // make sure to send a complete response
 	wg := new(sync.WaitGroup)  // wait until all request are handled
 	for {
@@ -76,7 +87,7 @@ func (server *Server) serveCodec(cc codec.Codec) {
 			continue
 		}
 		wg.Add(1)
-		go server.handleRequest(cc, req, sending, wg)
+		go server.handleRequest(cc, req, sending, wg, ip)
 	}
 	wg.Wait()
 	_ = cc.Close()
@@ -122,13 +133,20 @@ func (server *Server) sendResponse(cc codec.Codec, h *codec.Header, body interfa
 	}
 }
 
-func (server *Server) handleRequest(cc codec.Codec, req *request, sending *sync.Mutex, wg *sync.WaitGroup) {
+func (server *Server) handleRequest(cc codec.Codec, req *request, sending *sync.Mutex, wg *sync.WaitGroup, ip string) {
 	// TODO, should call registered rpc methods to get the right replyv
 	// day 1, just print argv and send a hello message
 	defer wg.Done()
 	log.Println(req.h, req.argv.Elem())
 	//根据req.h(url),req.argv.Elem(参数)进行http
-	req.replyv = reflect.ValueOf(fmt.Sprintf("geerpc resp %d", req.h.Seq))
+
+	serverList := ServerModel.GetServerListByName(fmt.Sprint(req.h.ServiceMethod))
+	usedServer := balance.PollBalance(serverList, ip)
+	//usedServer := serverList[0]
+	fmt.Println("111", fmt.Sprint(req.argv.Elem()))
+	respStr := httpclient.Post(GetUrl(usedServer.Ip, usedServer.Name), fmt.Sprint(req.argv.Elem()))
+
+	req.replyv = reflect.ValueOf(respStr)
 	server.sendResponse(cc, req.h, req.replyv.Interface(), sending)
 }
 
@@ -137,11 +155,12 @@ func (server *Server) handleRequest(cc codec.Codec, req *request, sending *sync.
 func (server *Server) Accept(lis net.Listener) {
 	for {
 		conn, err := lis.Accept()
+
 		if err != nil {
 			log.Println("rpc server: accept error:", err)
 			return
 		}
-		go server.ServeConn(conn)
+		go server.ServeConn(conn, conn.RemoteAddr().String())
 	}
 }
 
@@ -149,13 +168,12 @@ func (server *Server) Accept(lis net.Listener) {
 // for each incoming connection.
 func Accept(lis net.Listener) { DefaultServer.Accept(lis) }
 
-func InitDefine1Server(addr chan string) {
+func InitDefine1Server() {
 	// pick a free port
-	l, err := net.Listen("tcp", ":0")
+	l, err := net.Listen("tcp", ":8001")
 	if err != nil {
 		log.Fatal("network error:", err)
 	}
-	log.Println("start rpc server on", l.Addr())
-	addr <- l.Addr().String()
+
 	Accept(l)
 }
