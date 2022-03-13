@@ -1,7 +1,7 @@
 package http
 
 import (
-	"Amanisis/model/registerModel"
+	"Amanisis/model/ServerModel"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"strings"
@@ -18,6 +18,6 @@ func server(c *gin.Context) {
 	server := strings.ReplaceAll(path, "/", ".")
 	server = strings.TrimLeft(server, ".")
 	fmt.Println(server)
-	serverList := registerModel.GetServerListByName(server)
+	serverList := ServerModel.GetServerListByName(server)
 	fmt.Println(serverList)
 }
